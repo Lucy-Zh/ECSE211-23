@@ -1,0 +1,21 @@
+// THIS IS WHAT I REMEMBER FROM THE CODE
+
+def collect_color_sensor_data():
+    try:
+        output_file = open(COLOR_SENSOR_DATA_FILE, "w")
+        print("Starting to collect color samples")
+        while True:
+            cs_data = COLOR_SENSOR.get_value()
+            if None not in cs_data:  
+                if TOUCH_SENSOR.is_pressed():
+		    print(f"{cs_data}")
+                    output_file.write(f"{cs_data}\n")
+                    while TOUCH_SENSOR.is_pressed():
+                        pass
+            sleep(0.01)
+    except BaseException:
+        pass
+    finally:
+        output_file.close()
+        reset_brick()
+        exit()
