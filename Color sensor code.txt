@@ -3,7 +3,6 @@
 def collect_color_sensor_data():
     try:
         output_file = open(COLOR_SENSOR_DATA_FILE, "w")
-        print("Starting to collect color samples")
         while True:
             cs_data = COLOR_SENSOR.get_value()
             if None not in cs_data:  
@@ -12,7 +11,7 @@ def collect_color_sensor_data():
                     output_file.write(f"{cs_data}\n")
                     while TOUCH_SENSOR.is_pressed():
                         pass
-            sleep(0.01)
+            sleep(0.01) 	// DELAY_SEC = 0.01 but we put it in directly
     except BaseException:
         pass
     finally:
