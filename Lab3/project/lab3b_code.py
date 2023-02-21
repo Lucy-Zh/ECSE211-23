@@ -7,6 +7,7 @@ This file must be run on the robot.
 from utils import sound
 from utils.brick import TouchSensor, wait_ready_sensors
 from utils.brick import Motor
+import time
 
 motor = Motor("A")
 
@@ -20,18 +21,43 @@ TOUCH_SENSOR_2 = TouchSensor(2)
 TOUCH_SENSOR_3 = TouchSensor(3)
 TOUCH_SENSOR_4 = TouchSensor(4)
 
+is_ts1_pressed = False
+is_ts2_pressed = False
+is_ts3_pressed = False
+is_ts4_pressed = False
 isMotorOn = False
 
 
 wait_ready_sensors()  # Note: Touch sensors actually have no initialization time
+def read_input():
+    t_end = time.time() + 5
+    while True:
+        if TOUCH_SENSOR_1.is_pressed() or TOUCH_SENSOR_2.is_pressed() or TOUCH_SENSOR_3.is_pressed() or TOUCH_SENSOR_4.is_pressed():
+            break
+
+    while time.time() < t_end:
+        if TOUCH_SENSOR_1.is_pressed():
+            is_ts1_pressed = True
+        if TOUCH_SENSOR_2.is_pressed():
+            is_ts2_pressed = True
+        if TOUCH_SENSOR_3.is_pressed():
+            is_ts3_pressed = True
+        if TOUCH_SENSOR_4.is_pressed():
+            is_ts4_pressed = True
+
+def reset_input():
+    is_ts1_pressed = False
+    is_ts2_pressed = False
+    is_ts3_pressed = False
+    is_ts4_pressed = False
 
 def emergency_stop():
-    motor.set_power(0) 
+    exit()
 
 def start_motor(): 
-    motor.set_power(100)
-    motor.set_position_relative(90)
-    motor.set_position_relative(-90)
+    motor.set_power(50)
+    motor.set_position_relative(50)
+    motor.set_position_relative(-50)
     isMotorOn = True
 
 def stop_motor():
@@ -62,24 +88,27 @@ def button_press():
     "In an infinite loop, if the touch sensor is pressed ..."
     try:
         while True:
+            read_input()
+
             if isMotorOn == True:
                 start_motor()
 
-
-            if TOUCH_SENSOR_1.is_pressed() and TOUCH_SENSOR_2.is_pressed() and TOUCH_SENSOR_3.is_pressed() and TOUCH_SENSOR_4.is_pressed():
+            if is_ts1_pressed and is_ts2_pressed and is_ts3_pressed and is_ts4_pressed:
                 emergency_stop()
-            elif TOUCH_SENSOR_1.is_pressed() and TOUCH_SENSOR_2.is_pressed() and isMotorOn == False:
+            elif is_ts1_pressed and is_ts2_pressed and isMotorOn == False:
                 start_motor()
-            elif TOUCH_SENSOR_1.is_pressed() and TOUCH_SENSOR_2.is_pressed() and isMotorOn == True:
+            elif is_ts1_pressed and is_ts2_pressed and isMotorOn == True:
                 stop_motor()
-            elif TOUCH_SENSOR_1.is_pressed():
+            elif is_ts1_pressed:
                 play_sound_1()
-            elif TOUCH_SENSOR_2.is_pressed():
+            elif is_ts2_pressed:
                 play_sound_2()
-            elif TOUCH_SENSOR_3.is_pressed():
+            elif is_ts3_pressed:
                 play_sound_3()
-            elif TOUCH_SENSOR_4.is_pressed():
+            elif is_ts4_pressed:
                 play_sound_4()
+
+            reset_input()
             
 
     # capture all exceptions including KeyboardInterrupt (Ctrl-C)
