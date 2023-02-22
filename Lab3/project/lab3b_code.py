@@ -12,10 +12,10 @@ import threading
 
 motor = Motor("A")
 
-SOUND_1 = sound.Sound(duration=0.3, pitch="C4", volume=120)
-SOUND_2 = sound.Sound(duration=0.3, pitch="G4", volume=120)
-SOUND_3 = sound.Sound(duration=0.3, pitch="A4", volume=120)
-SOUND_4 = sound.Sound(duration=0.3, pitch="E4", volume=120)
+SOUND_1 = sound.Sound(duration=0.3, pitch="C4", volume=100)
+SOUND_2 = sound.Sound(duration=0.3, pitch="G4", volume=100)
+SOUND_3 = sound.Sound(duration=0.3, pitch="A4", volume=100)
+SOUND_4 = sound.Sound(duration=0.3, pitch="E4", volume=100)
 
 TOUCH_SENSOR_1 = TouchSensor(1)
 TOUCH_SENSOR_2 = TouchSensor(2)
@@ -38,7 +38,7 @@ def read_input():
             break
 
     i = 0
-    while i < 3:
+    while i < 2:
         print("for loop read_input")
         if TOUCH_SENSOR_1.is_pressed():
             print("sensor 1 is marked as pressed")
@@ -117,7 +117,7 @@ def button_press():
         while True:
             read_input()
 
-            if is_ts1_pressed and is_ts2_pressed and is_ts3_pressed and is_ts4_pressed:
+            if is_ts3_pressed and is_ts4_pressed:
                 emergency_stop()
             elif is_ts1_pressed and is_ts2_pressed and isMotorOn is False:
                 stopMotor = False
