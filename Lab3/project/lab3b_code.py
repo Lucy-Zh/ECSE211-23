@@ -66,6 +66,7 @@ def reset_input():
 
 def emergency_stop():
     print("stop")
+    motor.set_position(0)
     exit()
 
 def start_motor():
@@ -73,17 +74,16 @@ def start_motor():
     global isMotorOn, stopMotor
     while True:
         if not stopMotor:
-            motor.set_position(45)
-            time.sleep(0.25)
             motor.set_position(0)
+            time.sleep(0.25)
+            motor.set_position(-45)
             time.sleep(0.25)
         else:
-            motor.set_position(0)
+            motor.set_position(-90)
 
 def stop_motor():
     print("stop motor")
     global isMotorOn
-    motor.set_power(0)
     isMotorOn = False
 
 def play_sound_1():
