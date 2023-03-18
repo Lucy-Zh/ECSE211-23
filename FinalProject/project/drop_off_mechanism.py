@@ -14,8 +14,8 @@ import time
 import math
 
 COLOR_SENSOR = EV3ColorSensor(1)
-CONVEYOR_BELT_MOTOR = Motor("C") # Motor used for convoyor belt
-PUSH_MOTOR = Motor("D") # Motor used for test
+CONVEYOR_BELT_MOTOR = Motor("B") # Motor used for convoyor belt
+PUSH_MOTOR = Motor("A") # Motor used for test
 
 POWER_LIMIT = 80       # Power limit = 80%
 SPEED_LIMIT = 720      # Speed limit = 720 deg per sec (dps)
@@ -46,8 +46,8 @@ zonePurpleB = 0.1472337223
 #color detected by the color sensor 
 detectedColor = -1
 currentPosition = 2 #0 to 5 - starts at yellow 
-rotationPerPositionConstant = 60
-pushingRotationConstant = 75
+rotationPerPositionConstant = -115
+pushingRotationConstant = -75
 # position of cubes: 0 = red, 1 = orange, 2 = yellow, 3 = green, 4 = blue, 5 = pink
 
 wait_ready_sensors()
@@ -55,7 +55,9 @@ def read_input_drop_off():
     global detectedColor, zoneRedR, zoneRedG, zoneRedB, zoneGreenR, zoneGreenG, zoneGreenB, zoneOrangeR, zoneOrangeG, zoneOrangeB, zoneYellowR, zoneYellowG, zoneYellowB, zoneBlueR, zoneBlueG, zoneBlueB, zonePurpleR, zonePurpleG, zonePurpleB    
     try:
         while True:
-            red, green, blue = C_SENSOR.get_value() # getting each R,G,B color
+            print("in while true read_input_drop_off")
+            time.sleep(3)
+            red, green, blue, trp = COLOR_SENSOR.get_value() # getting each R,G,B color
 
             # normalizing the values obtained by the color sensor
             nRed = red/(math.sqrt(red*red + green*green + blue*blue))
@@ -74,33 +76,37 @@ def read_input_drop_off():
             color_zone_list.sort() # the first array value determines which color is the closest to the value obtained from the color sensor
 
             if color_zone_list[0] == distBlue:
+                print("blue!") # temp logic until we implement the rest
                 detectedColor = 4
                 moveConveyorBelt()
-                print("blue!") # temp logic until we implement the rest
             if color_zone_list[0] == distGreen:
+                print("green!")
                 detectedColor = 3
                 moveConveyorBelt()
-                print("green!")
             if color_zone_list[0] == distYellow:
+                print("yellow!")
                 detectedColor = 2
                 moveConveyorBelt()
-                print("yellow!")
             if color_zone_list[0] == distRed:
+                print("red")
                 detectedColor = 0
                 moveConveyorBelt()
-                print("red!")
             if color_zone_list[0] == distOrange:
+                print("orange!")
                 detectedColor = 1
                 moveConveyorBelt()
-                print("orange!")
             if color_zone_list[0] == distPurple:
+                print("purple!")
                 detectedColor = 5
                 moveConveyorBelt()
-                print("purple!")
+            time.sleep(3)
     except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
+        CONVEYOR_BELT_MOTOR.set_position_relative(0)
+        PUSH_MOTOR.set_position_relative(0)
         BP.reset_all()
 
 def moveConveyorBelt():
+    print("moveConveyorBelt entered")
     global detectedColor, currentPosition, rotationPerPositionConstant
     # move the conveyor belt so that the detected color is at the right position to push
     # this is where the logic for the conveyor belt will go
@@ -112,12 +118,14 @@ def moveConveyorBelt():
     rotations = numberOfPositions * rotationPerPositionConstant
 
     # Encoder keeps a record of degrees turned
-    CONVEYOR_BELT_MOTOR.reset_encoder()                      # Reset encoder to 0 value
-    CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits
-    CONVEYOR_BELT_MOTOR.set_dps(SPEED)                              # Set the speed for the motor
-    CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED)
+    #CONVEYOR_BELT_MOTOR.reset_encoder()                      # Reset encoder to 0 value
+    #CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits                             # Set the speed for the motor
+    #CONVEYOR_BELT_MOTOR.set_dps(SPEED)
+    #CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT)
     CONVEYOR_BELT_MOTOR.set_position_relative(rotations)             # Rotate the desired amount of degrees
-
+    
+    time.sleep(20)
+    #CONVEYOR_BELT_MOTOR.set_power(0)
     pushCube() # push cube into delivery zone
 
     # update currentPosition 
@@ -128,14 +136,20 @@ def pushCube():
     # this is where the logic for the pusher will go
     print("push cube")
     # Encoder keeps a record of degrees turned
-    PUSH_MOTOR.reset_encoder()                      # Reset encoder to 0 value
-    PUSH_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits
-    PUSH_MOTOR.set_dps(SPEED)                              # Set the speed for the motor
-    PUSH_MOTOR.set_limits(POWER_LIMIT, SPEED)
-    PUSH_MOTOR.set_position_relative(-pushingRotationConstant) # Rotate negative rotation when pushing out cube 
-    time.sleep(0.5)
-    PUSH_MOTOR.set_position_relative(pushingRotationConstant) # Rotate back to original position
-    return 
+    #PUSH_MOTOR.reset_encoder()                      # Reset encoder to 0 value
+    #PUSH_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits
+    #PUSH_MOTOR.set_dps(SPEED)                              # Set the speed for the motor
+    #PUSH_MOTOR.set_limits(POWER_LIMIT, SPEED)
+    PUSH_MOTOR.set_position_relative(-50) # Rotate negative rotation when pushing out cube 
+    time.sleep(2)
+    PUSH_MOTOR.set_position_relative(50) # Rotate back to original position
+    time.sleep(2)
+    return
 
+if __name__ == '__main__':
+   CONVEYOR_BELT_MOTOR.set_position_relative(0)
+   PUSH_MOTOR.set_position_relative(0)
+   #CONVEYOR_BELT_MOTOR.set_power(0)
+   read_input_drop_off()
 
         
