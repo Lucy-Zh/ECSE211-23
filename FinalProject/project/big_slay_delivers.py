@@ -78,16 +78,15 @@ def move_forward():
 def stop_moving():
     print("stop!")
     global delivery_count
-    BP.reset_all()
-    # call the delivery drop-off mechanism
-    read_input_drop_off()
-    delivery_count += 1
-    # move away from green line
+    # move straight forward from green line
     LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
     RIGHT_MOTOR.set_dps(150)
     LEFT_MOTOR.set_position_relative(180)             # Rotate the desired amount of degrees
     RIGHT_MOTOR.set_position_relative(180)
     time.sleep(1)
+    # call the delivery drop-off mechanism
+    read_input_drop_off()
+    delivery_count += 1
 
 def turn_180():
     print("Turning 180 degrees!")
