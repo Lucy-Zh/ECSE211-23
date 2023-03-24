@@ -5,12 +5,7 @@ This one is specifically for the detection of the delivery zones.
 The general logic comes from the Hands on with BrickPi 2 Lecture slide.
 Author: Nazia Chowdhury
 """
-
-from utils.brick import EV3ColorSensor, wait_ready_sensors
-import time
 import math
-
-COLOR_SENSOR = EV3ColorSensor(1)
 
 # Average of the normalized values of RGB for each color.
 # Data was collected by the Test Lead.
@@ -33,11 +28,8 @@ zonePurpleR = 0.7320625319
 zonePurpleG = 0.1207037458
 zonePurpleB = 0.1472337223
 
-wait_ready_sensors()
 
-try:
-    while True:
-        red, green, blue = C_SENSOR.get_value() # getting each R,G,B color
+def get_delivery_zone_color(red, green, blue):
 
         # normalizing the values obtained by the color sensor
         nRed = red/(math.sqrt(red*red + green*green + blue*blue))
@@ -56,17 +48,20 @@ try:
         color_zone_list.sort() # the first array value determines which color is the closest to the value obtained from the color sensor
 
         if color_zone_list[0] == distBlue:
-            print("blue!") # temp logic until we implement the rest
+            #print("blue!")
+            return "blue"
         if color_zone_list[0] == distGreen:
-            print("green!")
+            #print("green!")
+            return "green"
         if color_zone_list[0] == distYellow:
-            print("yellow!")
+            #print("yellow!")
+            return "yellow"
         if color_zone_list[0] == distRed:
-            print("red!")
+            #print("red!")
+            return "red"
         if color_zone_list[0] == distOrange:
-            print("orange!")
+            #print("orange!")
+            return "orange"
         if color_zone_list[0] == distPurple:
-            print("purple!")
-except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
-    BP.reset_all()
-
+            #print("purple!")
+            return "purple"

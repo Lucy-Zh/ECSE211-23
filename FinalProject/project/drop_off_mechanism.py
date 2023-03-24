@@ -12,7 +12,7 @@ from utils.brick import EV3ColorSensor, wait_ready_sensors, BP, Motor
 import time
 import math
 
-COLOR_SENSOR = EV3ColorSensor(1)
+COLOR_SENSOR_2 = EV3ColorSensor(1)
 CONVEYOR_BELT_MOTOR = Motor("B") # Motor used for convoyor belt
 PUSH_MOTOR = Motor("A") # Motor used for test
 
@@ -56,7 +56,7 @@ def read_input_drop_off():
         while True:
             print("in while true read_input_drop_off")
             time.sleep(3)
-            red, green, blue, trp = COLOR_SENSOR.get_value() # getting each R,G,B color
+            red, green, blue, trp = COLOR_SENSOR_2.get_value() # getting each R,G,B color
 
             # normalizing the values obtained by the color sensor
             nRed = red/(math.sqrt(red*red + green*green + blue*blue))
@@ -143,7 +143,6 @@ def pushCube():
     time.sleep(2)
     PUSH_MOTOR.set_position_relative(50) # Rotate back to original position
     time.sleep(2)
-    return
 
 if __name__ == '__main__':
    CONVEYOR_BELT_MOTOR.set_position_relative(0)
