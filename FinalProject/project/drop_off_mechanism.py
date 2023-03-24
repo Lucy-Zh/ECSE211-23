@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 """
-This code handles the detection of the color from the values obtained from the color sensor.
-This one is specifically for the detection of the delivery zones.
-The general logic comes from the Hands on with BrickPi 2 Lecture slide.
-Author: Nazia Chowdhury, Lucy Zhang, and Samantha Perez Hoffman 
+This code handles the delivery of the cubes.
+Author: Lucy Zhang, and Samantha Perez Hoffman
+The color detection algorithm from color_detection_delivery_zone.py is used.
 """
 # Detect color of delivery zone 
 # Move conveyor belt so that detected colored cube is at the right position to push
@@ -124,7 +123,7 @@ def moveConveyorBelt():
     #CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT)
     CONVEYOR_BELT_MOTOR.set_position_relative(rotations)             # Rotate the desired amount of degrees
     
-    time.sleep(20)
+    time.sleep(5)
     #CONVEYOR_BELT_MOTOR.set_power(0)
     pushCube() # push cube into delivery zone
 

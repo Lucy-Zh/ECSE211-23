@@ -1,22 +1,16 @@
 #!/usr/bin/python3
 """
 This code handles the detection of the color from the values obtained from the color sensor.
-This one is specifically for the navigation path subsystem.
+This one is specifically for the detection of the routes.
 The general logic comes from the Hands on with BrickPi 2 Lecture slide.
-Author: Nazia Chowdhury and Yu An Lu
+Author: Nazia Chowdhury
 """
 
-from utils.brick import EV3ColorSensor, wait_ready_sensors, BP, Motor, TouchSensor
+from utils.brick import EV3ColorSensor, wait_ready_sensors, BP
 import time
 import math
 
 COLOR_SENSOR_1 = EV3ColorSensor(1)
-TOUCH_SENSOR =TouchSensor(2)
-LEFT_MOTOR = Motor("C") # Auxilliary Motor used for test
-RIGHT_MOTOR = Motor("B")    # Right motor in Port D
-
-POWER_LIMIT = 80       # Power limit = 80%
-SPEED_LIMIT = 720      # Speed limit = 720 deg per sec (dps)
 
 # Average of the normalized values of RGB for each color.
 # Data was collected by the Test Lead.
@@ -33,74 +27,11 @@ zoneWhiteR = 0.4414476473
 zoneWhiteG = 0.3817272739
 zoneWhiteB = 0.1768250788
 
-# green line count
-delivery_count = 0
-# return loading bay boolean
-return_loading_bay = False
-# on/off button boolean
-stop_system = True
-
-def motor_set_up():
-    print("Motor Set up")
-    
-    # Encoder keeps a record of degrees turned
-    LEFT_MOTOR.reset_encoder()                      # Reset encoder to 0 value
-    RIGHT_MOTOR.reset_encoder()                      # Reset encoder to 0 value
-    LEFT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits
-    RIGHT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits
-    LEFT_MOTOR.set_power(0)
-    RIGHT_MOTOR.set_power(0)
-    #LEFT_MOTOR.set_dps(50)
-    #RIGHT_MOTOR.set_dps(50)
-
-def turn_right():
-    #LEFT_MOTOR.set_dps(speed_left)                              # Set the speed for the motor
-    #LEFT_MOTOR.set_limits(POWER_LIMIT, speed_left)
-    LEFT_MOTOR.set_dps(150)
-    RIGHT_MOTOR.set_dps(150)
-    LEFT_MOTOR.set_position_relative(90)             # Rotate the desired amount of degrees
-    #RIGHT_MOTOR.set_dps(speed_right)                              # Set the speed for the motor
-    #RIGHT_MOTOR.set_limits(POWER_LIMIT, speed_right)
-    RIGHT_MOTOR.set_position_relative(0)
-    time.sleep(1)
-
-def turn_left():
-    print("left!")
-    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
-    RIGHT_MOTOR.set_dps(150)                              # Set the speed for the motor
-    #LEFT_MOTOR.set_limits(POWER_LIMIT, speed_left)
-    LEFT_MOTOR.set_position_relative(0)             # Rotate the desired amount of degrees
-    #RIGHT_MOTOR.set_dps(speed_right)                              # Set the speed for the motor
-    #RIGHT_MOTOR.set_limits(POWER_LIMIT, speed_right)
-    RIGHT_MOTOR.set_position_relative(90)
-    time.sleep(1)
-
-def move_forward():
-    print("straight!")
-    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
-    RIGHT_MOTOR.set_dps(150)
-    #LEFT_MOTOR.set_limits(POWER_LIMIT, speed_left)
-    LEFT_MOTOR.set_position_relative(90)             # Rotate the desired amount of degrees
-    #RIGHT_MOTOR.set_dps(speed_right)                              # Set the speed for the motor
-    #RIGHT_MOTOR.set_limits(POWER_LIMIT, speed_right)
-    RIGHT_MOTOR.set_position_relative(90)
-    time.sleep(1)
-
-def stop_moving():
-        global delivery_count
-        BP.reset_all()
-        delivery_count += 1
-        exit()
-        # call the delivery drop-off mechanism
-        # navigation()
-        
 def navigation():
-
     wait_ready_sensors()
     try:
         while True:
             time.sleep(1)
-            #if COLOR_SENSOR_1.get_value() != None:
             red, green, blue, trp = COLOR_SENSOR_1.get_value() # getting each R,G,B color
 
             # normalizing the values obtained by the color sensor
@@ -119,26 +50,16 @@ def navigation():
 
             if color_zone_list[0] == distWhite:
                 print("white!")
-                move_forward()
             if color_zone_list[0] == distBlue:
-                print("blue!") # temp logic until we implement the rest
-                if not return_loading_bay:
-                    turn_left()
-                else:
-                    turn_right()
+                print("blue!")
             if color_zone_list[0] == distRed:
                 print("red!")
-                if not return_loading_bay:
-                    turn_right()
-                else:
-                    turn_left()
             if color_zone_list[0] == distGreen:
                 print("green!")
-                stop_moving()
 
     except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
         BP.reset_all()
 
 if __name__ == "__main__":
-    motor_set_up()
     navigation()
+
