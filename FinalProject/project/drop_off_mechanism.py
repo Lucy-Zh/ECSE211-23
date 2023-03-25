@@ -38,9 +38,9 @@ zoneYellowB = 0.06261757062
 zoneBlueR = 0.286503036
 zoneBlueG = 0.3132329357
 zoneBlueB = 0.4002640284
-zonePurpleR = 0.7320625319
-zonePurpleG = 0.1207037458
-zonePurpleB = 0.1472337223
+zonePurpleR = 0.6988039776
+zonePurpleG = 0.131249792
+zonePurpleB = 0.1699462304
 
 #color detected by the color sensor 
 detectedColor = -1

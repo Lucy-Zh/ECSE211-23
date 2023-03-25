@@ -27,6 +27,12 @@ zoneBlueB = 0.4002640284
 zonePurpleR = 0.7320625319
 zonePurpleG = 0.1207037458
 zonePurpleB = 0.1472337223
+# zoneWhiteR = 0.3868646842
+# zoneWhiteG = 0.3529402429
+# zoneWhiteB = 0.2601950728
+zoneWhiteR = 0.4414476473
+zoneWhiteG = 0.3817272739
+zoneWhiteB = 0.1768250788
 
 
 def get_delivery_zone_color(red, green, blue):
@@ -43,6 +49,7 @@ def get_delivery_zone_color(red, green, blue):
         distRed = math.sqrt((nRed - zoneRedR) ** 2 + (nGreen - zoneRedG) ** 2 + (nBlue - zoneRedB) ** 2)
         distOrange = math.sqrt((nRed - zoneOrangeR) ** 2 + (nGreen - zoneOrangeG) ** 2 + (nBlue - zoneOrangeB) ** 2)
         distPurple = math.sqrt((nRed - zonePurpleR) ** 2 + (nGreen - zonePurpleG) ** 2 + (nBlue - zonePurpleB) ** 2)
+        distWhite = math.sqrt((nRed - zoneWhiteR) ** 2 + (nGreen - zoneWhiteG) ** 2 + (nBlue - zoneWhiteB) ** 2)
 
         color_zone_list = [distBlue, distGreen, distYellow, distRed, distOrange, distPurple]
         color_zone_list.sort() # the first array value determines which color is the closest to the value obtained from the color sensor
@@ -55,13 +62,24 @@ def get_delivery_zone_color(red, green, blue):
             return "green"
         if color_zone_list[0] == distYellow:
             #print("yellow!")
-            return "yellow"
+            if blue >= 100:
+                return "white"
+            else:
+                return "yellow"
         if color_zone_list[0] == distRed:
+            if red <= 200:
+                return "purple"
+            else:
+                return "red"
             #print("red!")
-            return "red"
+#             return "red"
         if color_zone_list[0] == distOrange:
             #print("orange!")
             return "orange"
         if color_zone_list[0] == distPurple:
             #print("purple!")
             return "purple"
+        if color_zone_list[0] == distWhite:
+            #print("white!")
+            return "white"
+        
