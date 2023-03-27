@@ -67,7 +67,7 @@ def get_delivery_zone_color(red, green, blue):
             else:
                 return "yellow"
         if color_zone_list[0] == distRed:
-            if red <= 200:
+            if red <= 195:
                 return "purple"
             else:
                 return "red"

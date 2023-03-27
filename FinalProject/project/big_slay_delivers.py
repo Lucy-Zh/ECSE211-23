@@ -41,6 +41,9 @@ def system_start():
 delivery_count = 0
 # return loading bay boolean
 return_loading_bay = False
+#array of pushed blocks
+#position of cubes: 0 = red, 1 = orange, 2 = yellow, 3 = green, 4 = blue, 5 = pink
+block_pushed = [False, False, False, False, False, False]
 
 def motor_set_up():
     print("Motor Set up")
@@ -77,6 +80,22 @@ def move_forward():
     LEFT_MOTOR.set_position_relative(90)             # Rotate the desired amount of degrees
     RIGHT_MOTOR.set_position_relative(90)
     time.sleep(1)
+    
+def move_forward_small():
+    print("straight!")
+    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
+    RIGHT_MOTOR.set_dps(150)
+    LEFT_MOTOR.set_position_relative(15)             # Rotate the desired amount of degrees
+    RIGHT_MOTOR.set_position_relative(15)
+    time.sleep(1)
+    
+def move_forward_small_zone():
+    print("straight!")
+    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
+    RIGHT_MOTOR.set_dps(150)
+    LEFT_MOTOR.set_position_relative(45)             # Rotate the desired amount of degrees
+    RIGHT_MOTOR.set_position_relative(45)
+    time.sleep(1)
 
 def stop_moving():
     print("stop!")
@@ -87,6 +106,8 @@ def stop_moving():
 #     RIGHT_MOTOR.set_position_relative(180)
     # get delivery zone color
     time.sleep(1)
+#     move_forward()
+#     print("first move forward")
     drop_off_zone_navigation()
     red, green, blue, trp = COLOR_SENSOR_2.get_value() # getting each R,G,B color
     color = cddz.get_delivery_zone_color(red, green, blue) # getting the color from color detection delivery zone
@@ -102,46 +123,57 @@ def stop_moving():
     delivery_count += 1
     
 def drop_off_zone_navigation():
-    global return_loading_bay, stop_system, delivery_count
+    global return_loading_bay, stop_system, delivery_count, detectedColor
     wait_ready_sensors()
     try:
         while True:
-            print("navigation while true drop off")
+            print("navigation while True drop off")
             
             red2, green2, blue2, trp2 = COLOR_SENSOR_2.get_value()
             color2 = cddz.get_delivery_zone_color(red2, green2, blue2)
-            print(color2)
+            set_detected_color_index(color2)
+            print(color2 + ": drop off zone color")
             if color2 != "white":
-                print("drop off zone detected")
-                break
+                print("potential drop off zone detected")
+                if block_pushed[detectedColor] == True:
+                    print("already pushed")
+                else:
+                    print("new color zone detected")
+                    break
             
             time.sleep(1)
             red, green, blue, trp = COLOR_SENSOR_1.get_value() # getting each R,G,B color
             color = cdn.get_navigation_color(red, green, blue) # getting the color from color detection navigation
 
             if color == "white":
-                #print("white!")
-                move_forward()
+                print("move forward white!")
+                move_forward_small_zone()
             if color == "blue":
-                #print("blue!")
+                print("turn right blue!")
                 if not return_loading_bay:
                     turn_right()
                 else:
                     turn_left()
             if color == "red":
-                #print("red!")
+                print("turn left red!")
                 if not return_loading_bay:
                     turn_left()
                 else:
                     turn_right()
             if color == "green" and not return_loading_bay:
-                #print("green!")
-                move_forward()
+                print("move forward green!")
+                move_forward_small_zone()
             if color == "yellow" and return_loading_bay:
-                #print("yellow!")
+                print("turn yellow!")
                 stop_system = True
                 turn_180()
                 system_start()
+            else:
+               move_forward_small_zone() 
+                
+#             else:
+#                 print("move forward white!")
+#                 move_forward()
 
 
     except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
@@ -160,7 +192,7 @@ def navigation():
     wait_ready_sensors()
     try:
         while True:
-            print("navigation while true")
+            print("navigation while True")
             # check if all deliveries have been made
             if delivery_count == 6:
                 return_loading_bay = True
@@ -172,7 +204,7 @@ def navigation():
             color = cdn.get_navigation_color(red, green, blue) # getting the color from color detection navigation
 
             if color == "white":
-                #print("white!")
+                print("white!")
                 move_forward()
             if color == "blue":
                 #print("blue!")
@@ -196,6 +228,13 @@ def navigation():
                 stop_system = True
                 turn_180()
                 system_start()
+            else:
+                move_forward_small()
+                
+#             else: #white
+#                 print("white!")
+#                 move_forward()
+                
 
 
     except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
@@ -210,6 +249,57 @@ rotationPerPositionConstant = -115
 # position of cubes: 0 = red, 1 = orange, 2 = yellow, 3 = green, 4 = blue, 5 = pink
 
 def read_input_drop_off(color):
+    global detectedColor, block_pushed
+    wait_ready_sensors()
+    try:
+        print("in read_input_drop_off")
+
+        if color == "blue":
+            print("blue!")
+            detectedColor = 4
+            if block_pushed[4] == False:
+                block_pushed[4] = True
+                moveConveyorBelt()
+        if color == "green":
+            print("green!")
+            detectedColor = 3
+            if block_pushed[3] == False:
+                block_pushed[3] = True
+                moveConveyorBelt()
+        if color == "yellow":
+            print("yellow!")
+            detectedColor = 2
+            if block_pushed[2] == False:
+                block_pushed[2] = True
+                moveConveyorBelt()
+        if color == "red":
+            print("red")
+            detectedColor = 0
+            if block_pushed[0] == False:
+                block_pushed[0] = True
+                moveConveyorBelt()
+        if color == "orange":
+            print("orange!")
+            detectedColor = 1
+            if block_pushed[1] == False:
+                block_pushed[1] = True
+                moveConveyorBelt()
+        if color == "purple":
+            print("purple!")
+            detectedColor = 5
+            if block_pushed[5] == False:
+                block_pushed[5] = True
+                moveConveyorBelt()
+        else:
+            move_forward_small()
+        time.sleep(3)
+
+    except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
+        CONVEYOR_BELT_MOTOR.set_position_relative(0)
+        PUSH_MOTOR.set_position_relative(0)
+        BP.reset_all()
+        
+def set_detected_color_index(color):
     global detectedColor
     wait_ready_sensors()
     try:
@@ -218,27 +308,21 @@ def read_input_drop_off(color):
         if color == "blue":
             print("blue!")
             detectedColor = 4
-            moveConveyorBelt()
         if color == "green":
             print("green!")
             detectedColor = 3
-            moveConveyorBelt()
         if color == "yellow":
             print("yellow!")
             detectedColor = 2
-            moveConveyorBelt()
         if color == "red":
             print("red")
             detectedColor = 0
-            moveConveyorBelt()
         if color == "orange":
             print("orange!")
             detectedColor = 1
-            moveConveyorBelt()
         if color == "purple":
             print("purple!")
             detectedColor = 5
-            moveConveyorBelt()
         time.sleep(3)
 
     except KeyboardInterrupt: # Program exit on ^C (Ctrl + C)
@@ -264,6 +348,7 @@ def moveConveyorBelt():
     #CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT) # Set the power and speed limits                             # Set the speed for the motor
     #CONVEYOR_BELT_MOTOR.set_dps(SPEED)
     #CONVEYOR_BELT_MOTOR.set_limits(POWER_LIMIT, SPEED_LIMIT)
+    CONVEYOR_BELT_MOTOR.set_dps(70)
     CONVEYOR_BELT_MOTOR.set_position_relative(rotations)             # Rotate the desired amount of degrees
     
     time.sleep(5)
@@ -288,6 +373,7 @@ def pushCube():
     PUSH_MOTOR.set_position_relative(50) # Rotate back to original position
     time.sleep(2)
     
+    CONVEYOR_BELT_MOTOR.set_dps(70)
     CONVEYOR_BELT_MOTOR.set_position_relative(-rotations)
     time.sleep(1)
 
