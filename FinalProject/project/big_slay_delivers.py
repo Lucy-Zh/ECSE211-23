@@ -90,9 +90,9 @@ def move_forward_small():
     print("move_forward_small!")
     LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
     RIGHT_MOTOR.set_dps(150)
-    LEFT_MOTOR.set_position_relative(0)             # Rotate the desired amount of degrees
-    RIGHT_MOTOR.set_position_relative(15)
-    time.sleep(0.5)
+    LEFT_MOTOR.set_position_relative(-5)             # Rotate the desired amount of degrees
+    RIGHT_MOTOR.set_position_relative(-5)
+    time.sleep(0.1)
     
 def move_forward_small_zone():
     print("move_forward_small_zone!")
@@ -100,7 +100,31 @@ def move_forward_small_zone():
     RIGHT_MOTOR.set_dps(150)
     LEFT_MOTOR.set_position_relative(20)             # Rotate the desired amount of degrees
     RIGHT_MOTOR.set_position_relative(20)
-    time.sleep(1)
+    time.sleep(0.1)
+
+def move_forward_red():
+    print("move_forward_red!")
+    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
+    RIGHT_MOTOR.set_dps(150)
+    LEFT_MOTOR.set_position_relative(20)
+    RIGHT_MOTOR.set_position_relative(20)
+    time.sleep(0.1)
+
+def turn_right_white():
+    print("turn_right_white!")
+    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
+    RIGHT_MOTOR.set_dps(150)
+    LEFT_MOTOR.set_position_relative(15)
+    RIGHT_MOTOR.set_position_relative(0)
+    time.sleep(0.1)
+
+def turn_left_white():
+    print("turn_left_white!")
+    LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
+    RIGHT_MOTOR.set_dps(150)
+    LEFT_MOTOR.set_position_relative(0)
+    RIGHT_MOTOR.set_position_relative(15)
+    time.sleep(0.1)
 
 def stop_moving():
     global zone_color, zone_color_detected, delivery_count
@@ -175,24 +199,32 @@ def navigation():
             if zone_color_detected:
                 print("zone color detected!")
                 stop_moving()
-            elif color == "white" and not zone_navigation:
-                print("white!")
-                move_forward()
-            elif color == "white" and zone_navigation:
-                print("white! delivery mode!")
-                move_forward_small_zone()
+            #elif color == "white" and not zone_navigation:
+                #print("white!")
+                #move_forward()
+            #elif color == "white" and zone_navigation:
+                #print("white! delivery mode!")
+                #move_forward_small_zone()
+            elif color == "white":
+                #print("white!")
+                if not return_loading_bay:
+                    turn_right_white()
+                else:
+                    turn_left_white()
+            elif color == "red":
+                move_forward_red()
+            #elif color == "red":
+                #print("red!")
+                #if not return_loading_bay:
+                    #turn_left()
+                #else:
+                    #turn_right()
             elif color == "blue":
                 #print("blue!")
                 if not return_loading_bay:
                     turn_right()
                 else:
                     turn_left()
-            elif color == "red":
-                #print("red!")
-                if not return_loading_bay:
-                    turn_left()
-                else:
-                    turn_right()
             elif color == "green" and not return_loading_bay and not zone_navigation:
                 #print("green!")
                 zone_navigation = True
