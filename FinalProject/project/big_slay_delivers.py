@@ -4,6 +4,7 @@ This code handles the delivery system.
 Author: Yu An Lu, Nazia Chowdhury, Lucy Zhang, and Samantha Perez Hoffman
 """
 
+from utils import sound
 from utils.brick import EV3ColorSensor, wait_ready_sensors, BP, Motor, TouchSensor
 import time
 import color_detection_navigation as cdn
@@ -11,6 +12,7 @@ import color_detection_delivery_zone as cddz
 import threading
 import operator
 
+SOUND = sound.Sound(duration=0.3, pitch="A4", volume=60)
 COLOR_SENSOR_1 = EV3ColorSensor(3)
 COLOR_SENSOR_2 = EV3ColorSensor(4)
 TOUCH_SENSOR =TouchSensor(1)
@@ -138,6 +140,8 @@ def turn_left_white():
 def stop_moving():
     global zone_color, zone_color_detected, delivery_count, sleep_time, num, zone_white_detected
     print("stop!")
+    SOUND.play()
+    SOUND.wait_done()
 #     LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
 #     RIGHT_MOTOR.set_dps(150)
 #     LEFT_MOTOR.set_position_relative(180)             # Rotate the desired amount of degrees
@@ -205,6 +209,8 @@ def turn_180():
 
 def navigation():
     global return_loading_bay, stop_system, delivery_count, zone_navigation, zone_color_detected, sleep_time, zone_white_detected
+    return_prev_color = ""
+
     wait_ready_sensors()
     try:
         while True:
@@ -241,18 +247,21 @@ def navigation():
                 if not return_loading_bay:
                     turn_right_white()
                 else:
+                    return_prev_color = "white"
                     move_forward()
             elif color == "red":
                 print("red!")
                 if not return_loading_bay:
                     move_left_red()
                 else:
+                    return_prev_color = "red"
                     turn_right()
             elif color == "blue":
                 #print("blue!")
                 if not return_loading_bay:
                     turn_right()
                 else:
+                    return_prev_color = "blue"
                     turn_left()
             elif color == "green" and not return_loading_bay and not zone_navigation:
                 #print("green!")
@@ -263,9 +272,14 @@ def navigation():
                 #print("green! delivery mode!")
                 move_forward_small_zone()
             elif color == "green" and return_loading_bay:
+                #print("green! returning mode!")
+                if return_prev_color != "green":
+                    delivery_count += 1
+                return_prev_color = "green"
                 move_forward()
-            elif color == "yellow" and return_loading_bay:
+            elif delivery_count == 6 and color == "yellow" and return_loading_bay:
                 print("yellow!")
+                delivery_count = 0
                 stop_system = True
                 return_loading_bay = False
                 turn_180()
