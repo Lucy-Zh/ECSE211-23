@@ -55,4 +55,8 @@ def get_navigation_color(red, green, blue):
         return "green"
     if color_zone_list[0] == distYellow:
         #print("yellow!")
-        return "yellow"
+        if blue >= 40:
+            return "white"
+        else:
+            return "yellow"
+        #return "yellow"

@@ -27,9 +27,6 @@ zoneBlueB = 0.4002640284
 zonePurpleR = 0.7320625319
 zonePurpleG = 0.1207037458
 zonePurpleB = 0.1472337223
-# zoneWhiteR = 0.3868646842
-# zoneWhiteG = 0.3529402429
-# zoneWhiteB = 0.2601950728
 zoneWhiteR = 0.4414476473
 zoneWhiteG = 0.3817272739
 zoneWhiteB = 0.1768250788
@@ -66,8 +63,9 @@ def get_delivery_zone_color(red, green, blue):
                 return "white"
             else:
                 return "yellow"
+            #return "yellow"
         if color_zone_list[0] == distRed:
-            if red <= 195:
+            if green >= 90:
                 return "purple"
             else:
                 return "red"
@@ -77,9 +75,16 @@ def get_delivery_zone_color(red, green, blue):
             #print("orange!")
             return "orange"
         if color_zone_list[0] == distPurple:
-            #print("purple!")
+#             if green >= 90:
+#                 return "purple"
+#             else:
+#                 return "red"
             return "purple"
         if color_zone_list[0] == distWhite:
+            if blue >= 100:
+                return "white"
+            else:
+                return "yellow"
             #print("white!")
-            return "white"
+            #return "white"
         
