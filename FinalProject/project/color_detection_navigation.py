@@ -18,12 +18,12 @@ zoneGreenB = 0.09605116068
 zoneBlueR = 0.2656504182
 zoneBlueG = 0.4049780494
 zoneBlueB = 0.3293715324
-zoneWhiteR = 0.4414476473
-zoneWhiteG = 0.3817272739
-zoneWhiteB = 0.1768250788
-zoneYellowR = 0.5371110826
-zoneYellowG = 0.4002713468
-zoneYellowB = 0.06261757062
+zoneWhiteR = 0.4104974659
+zoneWhiteG = 0.4055456529
+zoneWhiteB = 0.1839568812
+zoneYellowR = 0.4991310051
+zoneYellowG = 0.4578207147
+zoneYellowB = 0.04304828024
 
 def get_navigation_color(red, green, blue):
     # normalizing the values obtained by the color sensor
@@ -43,7 +43,11 @@ def get_navigation_color(red, green, blue):
 
     if color_zone_list[0] == distWhite:
         #print("white!")
-        return "white"
+        if blue >= 80:
+            return "white"
+        else:
+            return "yellow"
+        #return "white"
     if color_zone_list[0] == distBlue:
         #print("blue!")
         return "blue"
@@ -55,8 +59,8 @@ def get_navigation_color(red, green, blue):
         return "green"
     if color_zone_list[0] == distYellow:
         #print("yellow!")
-        if blue >= 40:
+        if blue >= 80:
             return "white"
         else:
             return "yellow"
-        #return "yellow"
+#         return "yellow"

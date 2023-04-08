@@ -9,27 +9,27 @@ import math
 
 # Average of the normalized values of RGB for each color.
 # Data was collected by the Test Lead.
-zoneRedR = 0.8009223042
-zoneRedG = 0.123192429
-zoneRedB = 0.07588526683
+zoneRedR = 0.8095180982
+zoneRedG = 0.12036282
+zoneRedB = 0.07011908174
 zoneGreenR = 0.2561182446
 zoneGreenG = 0.5920031429
 zoneGreenB = 0.1518786125
-zoneOrangeR = 0.7850831432
-zoneOrangeG = 0.1574974183
-zoneOrangeB = 0.05741943848
-zoneYellowR = 0.5371110826
-zoneYellowG = 0.4002713468
-zoneYellowB = 0.06261757062
+zoneOrangeR = 0.7319939999
+zoneOrangeG = 0.2033230213
+zoneOrangeB = 0.06468297882
+zoneYellowR = 0.5092062061
+zoneYellowG = 0.4287423951
+zoneYellowB = 0.060513989
 zoneBlueR = 0.286503036
 zoneBlueG = 0.3132329357
 zoneBlueB = 0.4002640284
-zonePurpleR = 0.7320625319
-zonePurpleG = 0.1207037458
-zonePurpleB = 0.1472337223
-zoneWhiteR = 0.4414476473
-zoneWhiteG = 0.3817272739
-zoneWhiteB = 0.1768250788
+zonePurpleR = 0.7006285831
+zonePurpleG = 0.136832503
+zonePurpleB = 0.1625081666
+zoneWhiteR = 0.3814265938
+zoneWhiteG = 0.3587578197
+zoneWhiteB = 0.2598155864
 
 
 def get_delivery_zone_color(red, green, blue):
@@ -63,28 +63,31 @@ def get_delivery_zone_color(red, green, blue):
                 return "white"
             else:
                 return "yellow"
-            #return "yellow"
+#             return "yellow"
         if color_zone_list[0] == distRed:
-            if green >= 90:
-                return "purple"
-            else:
+            if red >= 200:
+#                 if green >= 90:
+#                     return "orange"
+#                 else:
                 return "red"
+            else:
+                return "purple"
             #print("red!")
-#             return "red"
+#              return "red"
         if color_zone_list[0] == distOrange:
             #print("orange!")
             return "orange"
         if color_zone_list[0] == distPurple:
-#             if green >= 90:
-#                 return "purple"
-#             else:
-#                 return "red"
-            return "purple"
+            if red >= 200:
+                return "red"
+            else:
+                return "purple"
+#              return "purple"
         if color_zone_list[0] == distWhite:
             if blue >= 100:
                 return "white"
             else:
                 return "yellow"
-            #print("white!")
-            #return "white"
+#             #print("white!")
+#             return "white"
         

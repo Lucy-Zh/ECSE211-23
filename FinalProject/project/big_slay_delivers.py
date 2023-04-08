@@ -97,8 +97,8 @@ def move_forward_small():
     print("move_forward_small!")
     LEFT_MOTOR.set_dps(150)                              # Set the speed for the motor
     RIGHT_MOTOR.set_dps(150)
-    LEFT_MOTOR.set_position_relative(15*num)             # Rotate the desired amount of degrees
-    RIGHT_MOTOR.set_position_relative(0)
+    LEFT_MOTOR.set_position_relative(10*num)             # Rotate the desired amount of degrees
+    RIGHT_MOTOR.set_position_relative(15*num)
     time.sleep(sleep_time)
     
 def move_forward_small_zone():
@@ -170,7 +170,7 @@ def zone_color_detection():
             #print("navigation while True drop off")
             if zone_navigation:
                 color_dict = { "blue": 0, "green": 0, "yellow": 0, "red": 0, "orange": 0, "purple": 0, "white": 0}
-                for x in range(10):
+                for x in range(50):
                     red, green, blue, trp = COLOR_SENSOR_2.get_value()
                     _color = cddz.get_delivery_zone_color(red, green, blue)
                     value = color_dict.get(_color)
@@ -216,14 +216,14 @@ def navigation():
         while True:
             print("navigation while True")
             # check if all deliveries have been made
-            if delivery_count == 6:
+            if delivery_count == 6 and not return_loading_bay:
                 return_loading_bay = True
                 turn_180()
                 delivery_count = 0
 
             #time.sleep(1)
             color_dict = { "blue": 0, "green": 0, "yellow": 0, "red": 0, "white": 0}
-            for x in range(10):
+            for x in range(50):
                 red, green, blue, trp = COLOR_SENSOR_1.get_value()
                 _color = cdn.get_navigation_color(red, green, blue)
                 value = color_dict.get(_color)
@@ -279,6 +279,8 @@ def navigation():
                 move_forward()
             elif delivery_count == 6 and color == "yellow" and return_loading_bay:
                 print("yellow!")
+                SOUND.play()
+                SOUND.wait_done()
                 delivery_count = 0
                 stop_system = True
                 return_loading_bay = False
@@ -407,7 +409,7 @@ def pushCube():
     # this is where the logic for the pusher will go
     print("push cube")
     # Encoder keeps a record of degrees turned
-    PUSH_MOTOR.set_dps(90)
+    PUSH_MOTOR.set_dps(70)
     PUSH_MOTOR.set_position_relative(-45) # Rotate negative rotation when pushing out cube 
     time.sleep(2)
     PUSH_MOTOR.set_dps(70)
